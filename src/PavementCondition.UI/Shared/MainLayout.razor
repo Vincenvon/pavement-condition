@@ -1,0 +1,33 @@
+﻿@inherits LayoutComponentBase
+@inject PavementCondition.UI.Services.Account.IAccountService AccountService
+@inject NavigationManager NavigationManager
+
+<div class="page">
+    @if (isLogged)
+    {
+        <div class="sidebar">
+            <NavMenu />
+        </div>
+
+    }
+    <div class="main">
+        <div class="content px-4">
+            @Body
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool isLogged = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLogged = !(await AccountService.GetTokenAsync() == null);
+
+
+        if (!isLogged)
+        {
+            NavigationManager.NavigateTo("/account/login");
+        }
+    }
+}

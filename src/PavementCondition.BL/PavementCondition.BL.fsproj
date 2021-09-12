@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <WarnOn>3390;$(WarnOn)</WarnOn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Accounts.fs" />
+    <Compile Include="Library.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PavementCondition.BL.Contracts\PavementCondition.BL.Contracts.fsproj" />
+    <ProjectReference Include="..\PavementCondition.DataAccess\PavementCondition.DataAccess.fsproj" />
+  </ItemGroup>
+
+</Project>
