@@ -4,7 +4,7 @@ open Microsoft.EntityFrameworkCore
 open PavementCondition.Entity
 open System.Reflection
 
-type DatabaseContext public(options) =
+type DatabaseContext(options: DbContextOptions<DatabaseContext>) =
     inherit DbContext(options)
 
     [<DefaultValue>]

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -17,13 +17,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.7" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.13.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PavementCondition.API.Contracts\PavementCondition.API.Contracts.fsproj" />
+    <ProjectReference Include="..\PavementCondition.BL.Contracts\PavementCondition.BL.Contracts.fsproj" />
+    <ProjectReference Include="..\PavementCondition.BL\PavementCondition.BL.fsproj" />
     <ProjectReference Include="..\PavementCondition.DataAccess\PavementCondition.DataAccess.fsproj" />
     <ProjectReference Include="..\PavementCondition.Entity\PavementCondition.Entity.fsproj" />
   </ItemGroup>

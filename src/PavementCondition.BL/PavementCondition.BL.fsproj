@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PavementCondition.BL.Contracts\PavementCondition.BL.Contracts.fsproj" />
     <ProjectReference Include="..\PavementCondition.DataAccess\PavementCondition.DataAccess.fsproj" />
   </ItemGroup>

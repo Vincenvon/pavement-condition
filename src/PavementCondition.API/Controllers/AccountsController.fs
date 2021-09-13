@@ -1,18 +1,25 @@
 ﻿namespace PavementCondition.API.Controllers
 
-open Microsoft.AspNetCore.Routing
 open Microsoft.Extensions.Logging
 open Microsoft.AspNetCore.Mvc
 open PavementCondition.API.Contracts.Accounts
+open PavementCondition.BL.Accounts
+open PavementCondition.DataAccess
+open PavementCondition.BL.Contracts.Accounts
 
 [<ApiController>]
 [<Route("[controller]")>]
-type AccountsController (logger : ILogger<AccountsController>) =
+type AccountsController (logger : ILogger<AccountsController> , ctx : DatabaseContext) =
     inherit Controller()
 
     [<HttpPost>]
     member _.Create([<FromBody>]model: CreateRequest) = 
-        let guid = Guid.NewGuid()
-        let defects: DefectType[] = [| { Id = guid; Name = "Crack" } |]
-        defects
-
+        let createDto: CreateDto = {
+            Email = model.Email
+            FirstName = model.FirstName
+            LastName = model.LastName
+            Username = model.Username
+            Password = model.Password
+        }
+        let createdDto = create ctx createDto
+        createdDto

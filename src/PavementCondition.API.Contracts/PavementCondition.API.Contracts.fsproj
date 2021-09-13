@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Accounts\LoginResponse.fs" />
+    <Compile Include="Accounts\LoginRequest.fs" />
     <Compile Include="Accounts\CreateRequest.fs" />
   </ItemGroup>
 
