@@ -9,6 +9,11 @@
         <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
             <DataAnnotationsValidator />
             <div class="form-group">
+                <label>Email</label>
+                <InputText @bind-Value="model.Email" class="form-control" />
+                <ValidationMessage For="@(() => model.Email)" />
+            </div>
+            <div class="form-group">
                 <label>First Name</label>
                 <InputText @bind-Value="model.FirstName" class="form-control" />
                 <ValidationMessage For="@(() => model.FirstName)" />

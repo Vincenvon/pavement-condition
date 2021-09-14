@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
+using PavementCondition.UI.Infrastructure;
 using PavementCondition.UI.Services.Account;
 using PavementCondition.UI.Services.Alert;
 using PavementCondition.UI.Services.LocalStorage;
@@ -21,6 +22,7 @@ namespace PavementCondition.UI
             builder.Services
                 .AddScoped<IAccountService, AccountService>()
                 .AddScoped<IAlertService, AlertService>()
+                .AddScoped<IApiClient, ApiClient>()
                 .AddScoped<ILocalStorageService, LocalStorageService>();
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
@@ -28,4 +30,5 @@ namespace PavementCondition.UI
             await builder.Build().RunAsync();
         }
     }
+
 }

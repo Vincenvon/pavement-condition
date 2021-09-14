@@ -1,6 +1,6 @@
 ﻿namespace PavementCondition.API.Contracts.Accounts
 
-type CreateRequest = {
+type RegisterRequest = {
     Email: string
     FirstName: string
     LastName: string

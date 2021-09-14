@@ -12,7 +12,9 @@ open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 
 module Program =
-    let createHostBuilder args =
+    let exitCode = 0
+
+    let CreateHostBuilder args =
         Host.CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(fun webBuilder ->
                 webBuilder.UseStartup<Startup>() |> ignore
@@ -20,6 +22,6 @@ module Program =
 
     [<EntryPoint>]
     let main args =
-        createHostBuilder(args).Build().Run()
+        CreateHostBuilder(args).Build().Run()
 
-        0 // Exit code
+        exitCode

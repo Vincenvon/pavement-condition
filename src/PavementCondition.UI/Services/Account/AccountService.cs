@@ -1,4 +1,6 @@
-﻿using PavementCondition.UI.Models.Account;
+﻿using PavementCondition.API.Contracts.Accounts;
+using PavementCondition.UI.Infrastructure;
+using PavementCondition.UI.Models.Account;
 
 using System.Threading.Tasks;
 
@@ -6,6 +8,13 @@ namespace PavementCondition.UI.Services.Account
 {
     public class AccountService : IAccountService
     {
+        private readonly IApiClient _apiClient;
+
+        public AccountService(IApiClient apiClient)
+        {
+            _apiClient = apiClient;
+        }
+
         public Task<string> GetTokenAsync()
         {
             return Task.FromResult((string)null);
@@ -16,9 +25,15 @@ namespace PavementCondition.UI.Services.Account
             throw new System.NotImplementedException();
         }
 
-        public Task RegisterAsync(RegisterModel registerModel)
+        public async Task RegisterAsync(RegisterModel registerModel)
         {
-            throw new System.NotImplementedException();
+            await _apiClient.PostAsync<RegisterRequest, RegisterResponse>(
+                new RegisterRequest(
+                    registerModel.Email,
+                    registerModel.FirstName,
+                    registerModel.LastName,
+                    registerModel.Username,
+                    registerModel.Password));
         }
     }
 }
