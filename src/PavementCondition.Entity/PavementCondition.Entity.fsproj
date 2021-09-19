@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="DefectType.fs" />
     <Compile Include="User.fs" />
   </ItemGroup>
 

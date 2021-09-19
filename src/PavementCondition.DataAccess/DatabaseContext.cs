@@ -13,6 +13,8 @@ namespace PavementCondition.DataAccess
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<DefectType> DefectTypes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

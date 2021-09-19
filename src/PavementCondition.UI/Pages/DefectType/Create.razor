@@ -1,0 +1,54 @@
+﻿@page "/defects/types/create"
+@inject IDefectTypeService DefectTypeService
+@inject IAlertService AlertService
+@inject NavigationManager NavigationManager
+
+<h1>Create defect types</h1>
+
+<div class="row">
+    <div class="card col-6">
+        <div class="card-body">
+            <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+                <DataAnnotationsValidator />
+                <div class="form-group">
+                    <label>Name</label>
+                    <InputText @bind-Value="model.Name" class="form-control" />
+                    <ValidationMessage For="@(() => model.Name)" />
+                </div>
+                <div class="row">
+                    <RadzenButton style="margin: 0 1rem 1rem 0" Click=@(onCancleClick) Text="Cancel" ButtonStyle="ButtonStyle.Light" />
+                    <RadzenButton style="margin: 0 1rem 1rem 0" Click=@(OnValidSubmit) Text="Save" ButtonStyle="ButtonStyle.Secondary" />
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private DefectTypeModel model = new DefectTypeModel();
+    private bool loading = false;
+
+    private async void OnValidSubmit()
+    {
+        AlertService.Clear();
+
+        loading = true;
+        try
+        {
+            await DefectTypeService.CreateAsync(model);
+            NavigationManager.NavigateTo("/defects/types");
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+
+    void onCancleClick()
+    {
+        NavigationManager.NavigateTo("/defects/types");
+    }
+}

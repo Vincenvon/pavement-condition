@@ -13,7 +13,7 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "PavementCondition.BL", "Pav
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "PavementCondition.BL.Contracts", "PavementCondition.BL.Contracts\PavementCondition.BL.Contracts.fsproj", "{3FA9828C-2B8D-4B42-8B52-68E89604BF59}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PavementCondition.API", "PavementCondition.API\PavementCondition.API.fsproj", "{0EA564B1-E28F-440D-B200-24BCBDD62C95}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "PavementCondition.API", "PavementCondition.API\PavementCondition.API.fsproj", "{0EA564B1-E28F-440D-B200-24BCBDD62C95}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PavementCondition.DataAccess", "PavementCondition.DataAccess\PavementCondition.DataAccess.csproj", "{80DA758E-CD3E-4BD0-B8B9-658BCEB5FC38}"
 EndProject

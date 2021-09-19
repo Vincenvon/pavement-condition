@@ -1,0 +1,61 @@
+﻿@page "/defects/types"
+@inject IDefectTypeService defectTypeService
+@inject NavigationManager NavigationManager
+
+<h1>Defect types</h1>
+
+@if (defectTypes == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col float-right">
+            <RadzenButton style="margin: 0 1rem 1rem 0" Click=@(onCreateClick) Text="Create" ButtonStyle="ButtonStyle.Secondary" />
+        </div>
+    </div>
+    <RadzenDataGrid @ref="defectTypeGrid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true"
+                    Data="@defectTypes" TItem="DefectTypeModel">
+        <Columns>
+            <RadzenDataGridColumn Width="50px" TItem="DefectTypeModel" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                <Template Context="data">
+                    @(defectTypes.IndexOf(data) + 1)
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="DefectTypeModel" Property="Name" Title="Name" />
+            <RadzenDataGridColumn TItem="DefectTypeModel" Property="CreatedDate" Title="Created date" FormatString="{0:d}" />
+            <RadzenDataGridColumn TItem="DefectTypeModel" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                <Template Context="defectType">
+                    <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => onEditClick(defectType))" @onclick:stopPropagation="true" />
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(args => onDeleteClick(defectType))" @onclick:stopPropagation="true" />
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+}
+
+@code {
+    RadzenDataGrid<DefectTypeModel> defectTypeGrid;
+    IList<DefectTypeModel> defectTypes;
+
+    protected async override void OnInitialized()
+    {
+        defectTypes = await defectTypeService.GetAsync();
+    }
+
+    void onEditClick(DefectTypeModel model)
+    {
+        NavigationManager.NavigateTo($"/defects/types/{model.Id}");
+    }
+
+    void onDeleteClick(DefectTypeModel model)
+    {
+
+    }
+
+    void onCreateClick()
+    {
+        NavigationManager.NavigateTo("/defects/types/create");
+    }
+}

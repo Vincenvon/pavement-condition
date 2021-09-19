@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PavementCondition.UI.Infrastructure;
 using PavementCondition.UI.Services.Account;
 using PavementCondition.UI.Services.Alert;
+using PavementCondition.UI.Services.DefectType;
 using PavementCondition.UI.Services.LocalStorage;
 
 using System;
@@ -23,7 +24,8 @@ namespace PavementCondition.UI
                 .AddScoped<IAccountService, AccountService>()
                 .AddScoped<IAlertService, AlertService>()
                 .AddScoped<IApiClient, ApiClient>()
-                .AddScoped<ILocalStorageService, LocalStorageService>();
+                .AddScoped<ILocalStorageService, LocalStorageService>()
+                .AddScoped<IDefectTypeService, DefectTypeService>();
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 

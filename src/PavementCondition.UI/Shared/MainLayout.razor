@@ -18,11 +18,11 @@
 </div>
 
 @code {
-    private bool isLogged = false;
+    private bool isLogged = true;
 
     protected override async Task OnInitializedAsync()
     {
-        isLogged = !(await AccountService.GetTokenAsync() == null);
+        //isLogged = !(await AccountService.GetTokenAsync() == null);
 
 
         if (!isLogged)

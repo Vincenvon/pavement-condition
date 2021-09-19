@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Controllers\DefectTypesController.fs" />
     <Compile Include="Controllers\AccountsController.fs" />
     <Compile Include="Startup.fs" />
     <Compile Include="Program.fs" />
