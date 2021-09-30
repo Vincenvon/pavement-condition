@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="DefectTypes\CreateDefectTypeResponse.fs" />
     <Compile Include="DefectTypes\CreateDefectTypeRequest.fs" />
     <Compile Include="Accounts\RegisterResponse.fs" />
     <Compile Include="Accounts\RegisterRequest.fs" />
     <Compile Include="Accounts\LoginResponse.fs" />
     <Compile Include="Accounts\LoginRequest.fs" />
+    <Compile Include="DefectTypes\DefectTypeResponse.fs" />
   </ItemGroup>
 
 </Project>

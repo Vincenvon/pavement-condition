@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-
-using PavementCondition.UI.Constants;
-using PavementCondition.UI.Settings;
-
+﻿
 using System;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -14,18 +10,31 @@ namespace PavementCondition.UI.Infrastructure
     public class ApiClient : IApiClient
     {
         private readonly HttpClient _httpClient;
-        private readonly ApiClientSettings _apiClientSettings;
 
-        public ApiClient(HttpClient httpClient, IOptions<ApiClientSettings> options)
+        public ApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _apiClientSettings = options.Value;
         }
 
-        public async Task<TResponse> PostAsync<TRequest, TResponse>(TRequest request)
+        public async Task<TResponse> GetAsync<TResponse>(string url)
         {
-            var message = new HttpRequestMessage(HttpMethod.Post,
-                $"{_apiClientSettings.BasePath}${ApiControllerNameConstants.Accounts}/register")
+            var message = new HttpRequestMessage(HttpMethod.Get, url)
+            {
+                Version = new Version(2, 0),
+            };
+
+            var response = await _httpClient.SendAsync(message);
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            return JsonSerializer.Deserialize<TResponse>(responseString, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+        }
+
+        public async Task<TResponse> PostAsync<TRequest, TResponse>(TRequest request, string url)
+        {
+            var message = new HttpRequestMessage(HttpMethod.Post, url)
             {
                 Version = new Version(2, 0),
                 Content = JsonContent.Create(request),
@@ -34,7 +43,10 @@ namespace PavementCondition.UI.Infrastructure
             var response = await _httpClient.SendAsync(message);
             var responseString = await response.Content.ReadAsStringAsync();
 
-            return JsonSerializer.Deserialize<TResponse>(responseString);
+            return JsonSerializer.Deserialize<TResponse>(responseString, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
         }
     }
 }

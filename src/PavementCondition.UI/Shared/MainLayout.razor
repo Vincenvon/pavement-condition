@@ -22,7 +22,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        //isLogged = !(await AccountService.GetTokenAsync() == null);
+        isLogged = !(await AccountService.GetTokenAsync() == null);
 
 
         if (!isLogged)

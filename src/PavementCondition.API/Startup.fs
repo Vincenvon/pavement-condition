@@ -14,6 +14,7 @@ type Startup(configuration: IConfiguration) =
     // This method gets called by the runtime. Use this method to add services to the container.
     member _.ConfigureServices(services: IServiceCollection) =
         // Add framework services.
+        services.AddAuthorization() |> ignore
         services.AddControllers() |> ignore
         services.AddDbContext<DatabaseContext>(
             fun optionsBuilder ->
@@ -22,13 +23,23 @@ type Startup(configuration: IConfiguration) =
                 ) |> ignore
             )  |> ignore
 
+        services.AddCors(fun o -> 
+            o.AddPolicy("DefaulCors", fun builder -> 
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader() |> ignore
+            )
+        ) |> ignore
+
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     member _.Configure(app: IApplicationBuilder, env: IWebHostEnvironment) =
         if (env.IsDevelopment()) then
             app.UseDeveloperExceptionPage() |> ignore
-        app.UseHttpsRedirection()
-           .UseRouting()
-           .UseAuthorization()
-           .UseEndpoints(fun endpoints ->
+
+        app.UseCors("DefaulCors") |> ignore
+        app.UseAuthentication()|> ignore
+        app.UseHttpsRedirection() |> ignore
+        app.UseRouting() |> ignore
+        app.UseEndpoints(fun endpoints ->
                 endpoints.MapControllers() |> ignore
             ) |> ignore

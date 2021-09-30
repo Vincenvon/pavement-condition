@@ -39,7 +39,7 @@ else
     RadzenDataGrid<DefectTypeModel> defectTypeGrid;
     IList<DefectTypeModel> defectTypes;
 
-    protected async override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
         defectTypes = await defectTypeService.GetAsync();
     }

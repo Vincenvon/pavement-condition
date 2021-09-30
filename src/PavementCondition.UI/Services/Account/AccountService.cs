@@ -27,13 +27,13 @@ namespace PavementCondition.UI.Services.Account
 
         public async Task RegisterAsync(RegisterModel registerModel)
         {
-            await _apiClient.PostAsync<RegisterRequest, RegisterResponse>(
+            var response = await _apiClient.PostAsync<RegisterRequest, RegisterResponse>(
                 new RegisterRequest(
                     registerModel.Email,
                     registerModel.FirstName,
                     registerModel.LastName,
                     registerModel.Username,
-                    registerModel.Password));
+                    registerModel.Password), "/accounts");
         }
     }
 }

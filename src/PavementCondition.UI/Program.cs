@@ -18,6 +18,8 @@ namespace PavementCondition.UI
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
+            var configuration = builder.Configuration;
+            var apiHttpUrl = configuration["apiUrl"];
             builder.RootComponents.Add<App>("#app");
 
             builder.Services
@@ -27,7 +29,7 @@ namespace PavementCondition.UI
                 .AddScoped<ILocalStorageService, LocalStorageService>()
                 .AddScoped<IDefectTypeService, DefectTypeService>();
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiHttpUrl) });
 
             await builder.Build().RunAsync();
         }

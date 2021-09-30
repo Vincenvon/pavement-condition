@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="JwtTokenSettings.fs" />
     <Compile Include="DefectTypes\CreateDefectTypeDto.fs" />
     <Compile Include="DefectTypes\DefectTypeDto.fs" />
+    <Compile Include="Accounts\TokenDto.fs" />
+    <Compile Include="Accounts\LoginDto.fs" />
     <Compile Include="Accounts\UserDto.fs" />
     <Compile Include="Accounts\CreateDto.fs" />
   </ItemGroup>

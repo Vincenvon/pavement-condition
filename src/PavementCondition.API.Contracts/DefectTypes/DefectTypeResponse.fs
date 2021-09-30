@@ -2,7 +2,8 @@
 
 open System
 
-type CreateDefectTypeResponse = {
+[<CLIMutable>]
+type DefectTypeResponse = {
     Id: int
     Name: string
     CreatedDate: DateTime

@@ -21,7 +21,7 @@ namespace PavementCondition.UI.Services.DefectType
         public async Task<DefectTypeModel> CreateAsync(DefectTypeModel model)
         {
             var request = new CreateDefectTypeRequest(model.Name);
-            var response = await _apiClient.PostAsync<CreateDefectTypeRequest, CreateDefectTypeResponse>(request);
+            var response = await _apiClient.PostAsync<CreateDefectTypeRequest, DefectTypeResponse>(request, "/defecttypes");
 
             return new DefectTypeModel
             {
@@ -41,9 +41,11 @@ namespace PavementCondition.UI.Services.DefectType
             throw new NotImplementedException();
         }
 
-        public Task<List<DefectTypeModel>> GetAsync()
+        public async Task<List<DefectTypeModel>> GetAsync()
         {
-            return Task.FromResult(Enumerable.Range(0, 10).Select(i => new DefectTypeModel { Id = i, CreatedDate = DateTime.Now, Name = i.ToString() }).ToList());
+            var responses = await _apiClient.GetAsync<List<DefectTypeResponse>>("/defecttypes");
+            var models = responses.Select(r => new DefectTypeModel { Id = r.Id, CreatedDate = r.CreatedDate, Name = r.Name }).ToList();
+            return models;
         }
 
         public Task<DefectTypeModel> GetByIdAsync(int id)
