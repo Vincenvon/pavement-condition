@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="RoadDefect.fs" />
+    <Compile Include="RoadInspection.fs" />
+    <Compile Include="Road.fs" />
     <Compile Include="DefectType.fs" />
     <Compile Include="User.fs" />
   </ItemGroup>

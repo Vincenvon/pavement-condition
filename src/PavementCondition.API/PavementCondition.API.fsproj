@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Mappers\Roads.fs" />
+    <Compile Include="Controllers\RoadsController.fs" />
     <Compile Include="Controllers\DefectTypesController.fs" />
     <Compile Include="Controllers\AccountsController.fs" />
     <Compile Include="Startup.fs" />

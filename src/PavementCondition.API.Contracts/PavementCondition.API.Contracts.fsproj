@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Roads\CreateRoadRequest.fs" />
+    <Compile Include="Roads\RoadResponse.fs" />
+    <Compile Include="DefectTypes\EditDefectTypeRequest.fs" />
     <Compile Include="DefectTypes\CreateDefectTypeRequest.fs" />
     <Compile Include="Accounts\RegisterResponse.fs" />
     <Compile Include="Accounts\RegisterRequest.fs" />

@@ -6,10 +6,12 @@ open PavementCondition.API.Contracts.Accounts
 open PavementCondition.BL.Accounts
 open PavementCondition.BL.Contracts.Accounts
 open PavementCondition.DataAccess
+open PavementCondition.BL.Contracts
+open Microsoft.Extensions.Options
 
 [<ApiController>]
 [<Route("[controller]")>]
-type AccountsController (logger : ILogger<AccountsController>, ctx : DatabaseContext) =
+type AccountsController (logger : ILogger<AccountsController>, ctx : DatabaseContext, jwtSettings: IOptions<JwtTokenSettings>) =
     inherit ControllerBase()
 
     [<HttpPost>]
@@ -33,24 +35,17 @@ type AccountsController (logger : ILogger<AccountsController>, ctx : DatabaseCon
         create ctx createDto
         |> mapToResponse
 
-    [<HttpPost>]
+    [<HttpPost("login")>]
     member _.Login([<FromBody>]model: LoginRequest) =
-        let createDto: CreateDto = {
+        let loginDto: LoginDto = {
             Email = model.Email
-            FirstName = model.FirstName
-            LastName = model.LastName
-            Username = model.Username
             Password = model.Password
         }
-        let mapToResponse (dto: UserDto) : RegisterResponse =
-            let response: RegisterResponse = {
-                Id= dto.Id
-                Email= dto.Email
-                FirstName= dto.FirstName
-                LastName= dto.LastName
-                Username= dto.Username
+        let mapToResponse (dto: TokenDto) : LoginResponse =
+            let response: LoginResponse = {
+                Token = dto.AccessToke
             }
             response
-        create ctx createDto
+        login ctx loginDto jwtSettings.Value
         |> mapToResponse
         

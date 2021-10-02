@@ -6,6 +6,9 @@ using PavementCondition.UI.Services.Account;
 using PavementCondition.UI.Services.Alert;
 using PavementCondition.UI.Services.DefectType;
 using PavementCondition.UI.Services.LocalStorage;
+using PavementCondition.UI.Services.Road;
+
+using Radzen;
 
 using System;
 using System.Net.Http;
@@ -23,11 +26,14 @@ namespace PavementCondition.UI
             builder.RootComponents.Add<App>("#app");
 
             builder.Services
+                .AddAutoMapper(typeof(Program).Assembly)
                 .AddScoped<IAccountService, AccountService>()
                 .AddScoped<IAlertService, AlertService>()
                 .AddScoped<IApiClient, ApiClient>()
                 .AddScoped<ILocalStorageService, LocalStorageService>()
-                .AddScoped<IDefectTypeService, DefectTypeService>();
+                .AddScoped<IDefectTypeService, DefectTypeService>()
+                .AddScoped<IRoadService, RoadService>()
+                .AddScoped<DialogService>();
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiHttpUrl) });
 

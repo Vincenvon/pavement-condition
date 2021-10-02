@@ -1,6 +1,9 @@
 ﻿@page "/defects/types"
 @inject IDefectTypeService defectTypeService
 @inject NavigationManager NavigationManager
+@inject DialogService DialogService
+
+@implements IDisposable
 
 <h1>Defect types</h1>
 
@@ -27,8 +30,8 @@ else
             <RadzenDataGridColumn TItem="DefectTypeModel" Property="CreatedDate" Title="Created date" FormatString="{0:d}" />
             <RadzenDataGridColumn TItem="DefectTypeModel" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
                 <Template Context="defectType">
-                    <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => onEditClick(defectType))" @onclick:stopPropagation="true" />
-                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(args => onDeleteClick(defectType))" @onclick:stopPropagation="true" />
+                    <RadzenButton Size="ButtonSize.Small" Icon="edit" Click="@(args => onEditClick(defectType))" @onclick:stopPropagation="true" />
+                    <RadzenButton Size="ButtonSize.Small" Icon="close" Click="@(args => onDeleteClick(defectType))" ButtonStyle="ButtonStyle.Danger" @onclick:stopPropagation="true" />
                 </Template>
             </RadzenDataGridColumn>
         </Columns>
@@ -37,7 +40,29 @@ else
 
 @code {
     RadzenDataGrid<DefectTypeModel> defectTypeGrid;
+
+    DefectTypeModel modelToDelete;
     IList<DefectTypeModel> defectTypes;
+
+    public void Dispose()
+    {
+        DialogService.OnClose -= Close;
+    }
+
+    protected override void OnInitialized()
+    {
+        DialogService.OnClose += Close;
+    }
+
+    void Close(dynamic result)
+    {
+        if (result == true)
+        {
+            defectTypeService.DeleteAsync(modelToDelete.Id).Wait();
+            defectTypes = defectTypeService.GetAsync().Result;
+
+        }
+    }
 
     protected async override Task OnInitializedAsync()
     {
@@ -49,9 +74,14 @@ else
         NavigationManager.NavigateTo($"/defects/types/{model.Id}");
     }
 
-    void onDeleteClick(DefectTypeModel model)
+    async Task onDeleteClick(DefectTypeModel model)
     {
-
+        modelToDelete = model;
+        await DialogService.Confirm($"Delte {model.Name}?", "Delete", new ConfirmOptions()
+        {
+            OkButtonText = "Yes",
+            CancelButtonText = "No"
+        });
     }
 
     void onCreateClick()

@@ -1,9 +1,12 @@
 ﻿namespace PavementCondition.BL.Contracts
 
+[<CLIMutable>]
 type JwtTokenSettings = {
     Secret: string
-    AccessTokenLifeTimeMin: string
-    RefreshTokenLifeTimeDays: string
+    AccessTokenLifeTimeMin: float
+    RefreshTokenLifeTimeDays: float
+    Issuer: string
+    Audience: string
 }
 
 

@@ -1,7 +1,10 @@
-﻿@inherits LayoutComponentBase
+﻿@using Radzen.Blazor
+@inherits LayoutComponentBase
 @inject PavementCondition.UI.Services.Account.IAccountService AccountService
 @inject NavigationManager NavigationManager
 
+
+<RadzenDialog />
 <div class="page">
     @if (isLogged)
     {

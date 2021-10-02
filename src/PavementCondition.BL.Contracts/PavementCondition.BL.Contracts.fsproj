@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="ValidationResult.fs" />
+    <Compile Include="Roads\CreateRoadDto.fs" />
+    <Compile Include="Roads\RoadDto.fs" />
     <Compile Include="JwtTokenSettings.fs" />
     <Compile Include="DefectTypes\CreateDefectTypeDto.fs" />
     <Compile Include="DefectTypes\DefectTypeDto.fs" />

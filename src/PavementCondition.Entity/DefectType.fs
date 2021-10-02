@@ -5,6 +5,6 @@ open System
 [<CLIMutable>]
 type DefectType = {
     Id: int
-    Name: string
+    mutable Name: string
     CreatedDate: DateTime
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace PavementCondition.UI.Models.DefectType
 {
@@ -6,6 +7,7 @@ namespace PavementCondition.UI.Models.DefectType
     {
         public int Id { get; set; }
 
+        [Required]
         public string Name { get; set; }
 
         public DateTime CreatedDate { get; set; }

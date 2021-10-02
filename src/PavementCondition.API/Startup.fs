@@ -7,6 +7,7 @@ open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open PavementCondition.DataAccess
 open Microsoft.EntityFrameworkCore
+open PavementCondition.BL.Contracts
 
 type Startup(configuration: IConfiguration) =
     member _.Configuration = configuration
@@ -30,6 +31,8 @@ type Startup(configuration: IConfiguration) =
                     .AllowAnyHeader() |> ignore
             )
         ) |> ignore
+
+        services.Configure<JwtTokenSettings>(configuration.GetSection(nameof(JwtTokenSettings))) |> ignore
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     member _.Configure(app: IApplicationBuilder, env: IWebHostEnvironment) =

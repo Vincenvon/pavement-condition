@@ -2,7 +2,6 @@
 using PavementCondition.UI.Infrastructure;
 using PavementCondition.UI.Models.DefectType;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,14 +30,22 @@ namespace PavementCondition.UI.Services.DefectType
             };
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            await _apiClient.DeleteAsync(id, $"/defecttypes/{id}");
         }
 
-        public Task<DefectTypeModel> EditAsync(DefectTypeModel model)
+        public async Task<DefectTypeModel> EditAsync(DefectTypeModel model)
         {
-            throw new NotImplementedException();
+            var request = new EditDefectTypeRequest(model.Id, model.Name, model.CreatedDate);
+            var response = await _apiClient.PutAsync<EditDefectTypeRequest, DefectTypeResponse>(request, "/defecttypes");
+
+            return new DefectTypeModel
+            {
+                CreatedDate = response.CreatedDate,
+                Name = response.Name,
+                Id = response.Id
+            };
         }
 
         public async Task<List<DefectTypeModel>> GetAsync()
@@ -48,9 +55,15 @@ namespace PavementCondition.UI.Services.DefectType
             return models;
         }
 
-        public Task<DefectTypeModel> GetByIdAsync(int id)
+        public async Task<DefectTypeModel> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var response = await _apiClient.GetAsync<DefectTypeResponse>($"/defecttypes/{id}");
+            return new DefectTypeModel
+            {
+                Id = response.Id,
+                Name = response.Name,
+                CreatedDate = response.CreatedDate
+            };
         }
     }
 }

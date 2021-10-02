@@ -25,6 +25,16 @@ type DefectTypesController (logger : ILogger<DefectTypesController>, ctx : Datab
         }
         createdResponse
 
+    [<HttpPut>]
+    member _.Edit([<FromBody>]model: EditDefectTypeRequest) =
+        let dto: DefectTypeDto = {
+            Name = model.Name
+            Id = model.Id
+            CreatedDate = model.CreatedDate
+        }
+        let editedDto = edit ctx dto
+        editedDto
+
     [<HttpGet>]
     member _.Get() = 
         get ctx |> Array.map(fun (x: DefectTypeDto) -> 
@@ -34,4 +44,12 @@ type DefectTypesController (logger : ILogger<DefectTypesController>, ctx : Datab
                 CreatedDate = x.CreatedDate
             }
             rsp)
-            
+
+    [<HttpGet("{defectTypeId:int}")>]
+    member _.GetById(defectTypeId: int) =  
+        getById ctx defectTypeId
+       
+       
+    [<HttpDelete("{defectTypeId:int}")>]
+    member _.Delete([<FromBody>]defectTypeId: int) = 
+        delete ctx defectTypeId

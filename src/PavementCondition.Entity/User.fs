@@ -1,7 +1,7 @@
 ﻿namespace PavementCondition.Entity
 
 [<CLIMutable>]
-type User = {
+type User = {    
     Id: int
     Email: string
     FirstName: string

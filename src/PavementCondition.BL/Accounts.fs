@@ -3,10 +3,15 @@
 open PavementCondition.DataAccess
 open PavementCondition.Entity
 open PavementCondition.BL.Contracts.Accounts
+open PavementCondition.BL.Contracts
 open System.Linq
 open BCrypt.Net
 open System.IdentityModel.Tokens.Jwt;
 open System.IdentityModel.Tokens 
+open System.Security.Claims
+open System
+open Microsoft.IdentityModel.Tokens
+open System.Text
 
 let create (db: DatabaseContext) (dto: CreateDto) :UserDto = 
     let existingUser = db.Users.AsQueryable().Where(fun u -> u.Email = dto.Email)
@@ -29,20 +34,38 @@ let create (db: DatabaseContext) (dto: CreateDto) :UserDto =
     }
     createdDto
 
-let login (db: DatabaseContext) (dto: LoginDto): TokenDto = 
-    let existingUser = db.Users.AsQueryable().FirstOrDefault(fun u -> u.Email = dto.Email)
-    match existingUser with
-    | null -> null
-    |_ -> 
+let buildToken (settings: JwtTokenSettings) (email: string): string = 
+    let now = DateTime.Now
+    let token = new JwtSecurityToken(settings.Issuer, settings.Audience, [| new Claim(ClaimsIdentity.DefaultNameClaimType, email) |],now, now.AddMinutes(settings.AccessTokenLifeTimeMin), new SigningCredentials(SymmetricSecurityKey(Encoding.ASCII.GetBytes(settings.Secret)), SecurityAlgorithms.HmacSha256))
+    let tokenHandler = new JwtSecurityTokenHandler()
+    let encodedJwt = tokenHandler.WriteToken(token);
+    encodedJwt;
+
+let login (db: DatabaseContext) (dto: LoginDto) (settings: JwtTokenSettings): TokenDto = 
+    let isUserExisting = db.Users.AsQueryable().Any(fun u -> u.Email = dto.Email)
+    match isUserExisting with
+    | false -> {
+        AccessToke = ""
+        RefreshToken = ""
+        }
+    |true -> 
+        let existingUser = db.Users.AsQueryable().First(fun u -> u.Email = dto.Email)
         let isPasswordValid = BCrypt.Verify(dto.Password, existingUser.PasswordHash)
         match isPasswordValid with
         | true -> 
-            let tokenHandler = new JwtSecurityTokenHandler()
-            let accessTokenDescriptor = new SecurityTokenDescriptor()
-            accessTokenDescriptor.Subject = new ClaimsIdentity(new[] { new Claim("id", accountId.ToString()) })
-            accessTokenDescriptor.Expires = DateTime.UtcNow.AddDays(7)
-            accessTokenDescriptor.SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            let token =  buildToken settings dto.Email
             let tokenDto: TokenDto = {
-               AccessToke = 
+                AccessToke = token
+                RefreshToken = token
             }
+            tokenDto
+        | false -> 
+            let token = ""
+            let tokenDto = {
+                AccessToke = token
+                RefreshToken = token
+            }
+            tokenDto
+            
     
+
