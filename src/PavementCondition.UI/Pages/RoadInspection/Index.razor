@@ -1,0 +1,99 @@
+﻿@page "/roads/inspections"
+@inject IRoadInspectionService roadInspectionService
+@inject NavigationManager NavigationManager
+@inject DialogService DialogService
+
+@implements IDisposable
+
+<h1>Road inspections</h1>
+
+@if (roadInspections == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col float-right">
+            <RadzenButton style="margin: 0 1rem 1rem 0" Click=@(onCreateClick) Text="Create" ButtonStyle="ButtonStyle.Secondary" />
+        </div>
+    </div>
+    <RadzenDataGrid @ref="roadInspectionGrid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true"
+                    Data="@roadInspections" TItem="RoadInspectionTableModel">
+        <Columns>
+            <RadzenDataGridColumn Width="50px" TItem="RoadInspectionTableModel" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                <Template Context="data">
+                    @(roadInspections.IndexOf(data) + 1)
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="RoadInspectionTableModel" Property="RoadNumber" Title="Road number" />
+            <RadzenDataGridColumn TItem="RoadInspectionTableModel" Property="Number" Title="Number" />
+            <RadzenDataGridColumn TItem="RoadInspectionTableModel" Property="Engineer" Title="Engineer" />
+            <RadzenDataGridColumn TItem="RoadInspectionTableModel" Property="InspectionDate" Title="InspectionDate" FormatString="{0:d}" />
+            <RadzenDataGridColumn TItem="RoadInspectionTableModel" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                <Template Context="roadInspection">
+                    <RadzenButton Size="ButtonSize.Small" Icon="edit" Click="@(args => onEditClick(roadInspection))" @onclick:stopPropagation="true" />
+                    <RadzenButton Size="ButtonSize.Small" Icon="assignment" Click="@(args => onDefectClick(roadInspection))" @onclick:stopPropagation="true" />
+                    <RadzenButton Size="ButtonSize.Small" Icon="close" Click="@(args => onDeleteClick(roadInspection))" ButtonStyle="ButtonStyle.Danger" @onclick:stopPropagation="true" />
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+}
+
+@code {
+    RadzenDataGrid<RoadInspectionTableModel> roadInspectionGrid;
+
+    RoadInspectionTableModel modelToDelete;
+    IList<RoadInspectionTableModel> roadInspections;
+
+    public void Dispose()
+    {
+        DialogService.OnClose -= Close;
+    }
+
+    protected override void OnInitialized()
+    {
+        DialogService.OnClose += Close;
+    }
+
+    void Close(dynamic result)
+    {
+        if (result == true)
+        {
+            roadInspectionService.DeleteAsync(modelToDelete.Id).Wait();
+            roadInspections = roadInspectionService.GetAsync().Result;
+
+        }
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        roadInspections = await roadInspectionService.GetAsync();
+    }
+
+    void onEditClick(RoadInspectionTableModel model)
+    {
+        NavigationManager.NavigateTo($"/roads/inspections/{model.Id}");
+    }
+
+    void onDefectClick(RoadInspectionTableModel model)
+    {
+        NavigationManager.NavigateTo($"/roads/inspections/{model.Id}/defects");
+    }
+
+    async Task onDeleteClick(RoadInspectionTableModel model)
+    {
+        modelToDelete = model;
+        await DialogService.Confirm($"Delte {model.Number}?", "Delete", new ConfirmOptions()
+        {
+            OkButtonText = "Yes",
+            CancelButtonText = "No"
+        });
+    }
+
+    void onCreateClick()
+    {
+        NavigationManager.NavigateTo("/roads/inspections/create");
+    }
+}

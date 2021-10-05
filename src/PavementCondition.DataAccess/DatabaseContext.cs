@@ -17,6 +17,10 @@ namespace PavementCondition.DataAccess
 
         public DbSet<Road> Roads { get; set; }
 
+        public DbSet<RoadInspection> RoadInspections { get; set; }
+
+        public DbSet<RoadDefect> RoadDefects { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

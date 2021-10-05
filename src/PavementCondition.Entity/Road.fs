@@ -3,9 +3,9 @@
 [<CLIMutable>]
 type Road = {
     Id: int
-    Number: string
-    StartPoint: string
-    EndPoint: string
-    Distance: decimal
-    ServiceOrganization: string
+    mutable Number: string
+    mutable StartPoint: string
+    mutable EndPoint: string
+    mutable Distance: decimal
+    mutable ServiceOrganization: string
 }

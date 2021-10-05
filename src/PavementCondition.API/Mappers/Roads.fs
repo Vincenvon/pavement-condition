@@ -23,3 +23,14 @@ let mapCreateRequestToCreateDto (request: CreateRoadRequest): CreateRoadDto =
         ServiceOrganization = request.ServiceOrganization
     }
     dto
+
+let mapEditRequestToDto (reuqest: EditRoadRequest): RoadDto = 
+    let dto: RoadDto = {
+        Id = reuqest.Id
+        Number = reuqest.Number
+        StartPoint = reuqest.StartPoint
+        EndPoint = reuqest.EndPoint
+        Distance = reuqest.Distance
+        ServiceOrganization = reuqest.ServiceOrganization
+    }
+    dto

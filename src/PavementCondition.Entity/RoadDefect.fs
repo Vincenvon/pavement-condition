@@ -3,8 +3,9 @@
 [<CLIMutable>]
 type RoadDefect = {
       Id: int
-      DefectTypeId: int
-      DefectStartPoint: decimal
-      DefectDistance: decimal
+      mutable RoadInspectionId: int
+      mutable DefectTypeId: int
+      mutable DefectStartPoint: decimal
+      mutable DefectDistance: decimal
 };
 

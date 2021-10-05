@@ -5,7 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Mappers\RoadStatus.fs" />
+    <Compile Include="Mappers\RoadDefects.fs" />
+    <Compile Include="Mappers\RoadsInspections.fs" />
     <Compile Include="Mappers\Roads.fs" />
+    <Compile Include="Controllers\RoadStatusesController.fs" />
+    <Compile Include="Controllers\RoadDefectsController.fs" />
+    <Compile Include="Controllers\RoadInspectionsContoller.fs" />
     <Compile Include="Controllers\RoadsController.fs" />
     <Compile Include="Controllers\DefectTypesController.fs" />
     <Compile Include="Controllers\AccountsController.fs" />

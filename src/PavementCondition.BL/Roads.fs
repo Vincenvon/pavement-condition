@@ -22,3 +22,44 @@ let create (db: DatabaseContext) (dto: CreateRoadDto): RoadDto =
         mapEntityToRoadDto entity
     |false ->
         raise(Exception(validationResult.Message))
+
+let getById (db: DatabaseContext) (roadId: int): RoadDto = 
+    let validationResult = validateRoadId db roadId
+    match validationResult.Success with
+    |true -> 
+        query {
+            for road in db.Roads do
+            find (road.Id = roadId)
+        } |>  mapEntityToRoadDto
+    |false ->
+        raise(Exception(validationResult.Message))
+
+let edit (db: DatabaseContext) (roadDto: RoadDto): RoadDto = 
+    let validationResult = validateEditRoadDto db roadDto
+    match validationResult.Success with
+    |true -> 
+        let entity = 
+            query {
+                for road in db.Roads do
+                find (road.Id = roadDto.Id)
+            } 
+        db.Roads.Update (mutateEntityByDto entity roadDto) |> ignore
+        db.SaveChanges() |> ignore
+        mapEntityToRoadDto entity
+    |false ->
+        raise(Exception(validationResult.Message))
+
+let delete (db: DatabaseContext) (roadId: int) = 
+    let validationResult = validateRoadId db roadId
+    match validationResult.Success with
+    | true -> 
+        let entity = 
+            query {
+                for road in db.Roads do
+                find (road.Id = roadId)
+            }  
+    
+        db.Roads.Remove entity |> ignore
+        db.SaveChanges() |> ignore
+    | false -> 
+        raise(Exception(validationResult.Message))

@@ -2,8 +2,7 @@
 @inject IRoadService roadService
 @inject NavigationManager NavigationManager
 @inject DialogService DialogService
-
-@implements IDisposable
+@inject IAlertService AlertService
 
 <h1>Roads</h1>
 
@@ -27,7 +26,7 @@ else
                 </Template>
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="RoadModel" Property="Number" Title="Number" />
-            <RadzenDataGridColumn TItem="RoadModel" Property="StartPoint" Title="Start point"/>
+            <RadzenDataGridColumn TItem="RoadModel" Property="StartPoint" Title="Start point" />
             <RadzenDataGridColumn TItem="RoadModel" Property="EndPoint" Title="End point" />
             <RadzenDataGridColumn TItem="RoadModel" Property="Distance" Title="Distance" />
             <RadzenDataGridColumn TItem="RoadModel" Property="ServiceOrganization" Title="Service organization" />
@@ -44,32 +43,19 @@ else
 @code {
     RadzenDataGrid<RoadModel> roadGrid;
 
-    RoadModel modelToDelete;
     IList<RoadModel> roads;
-
-    public void Dispose()
-    {
-        DialogService.OnClose -= Close;
-    }
-
-    protected override void OnInitialized()
-    {
-        DialogService.OnClose += Close;
-    }
-
-    void Close(dynamic result)
-    {
-        if (result == true)
-        {
-            roadService.DeleteAsync(modelToDelete.Id).Wait();
-            roads = roadService.GetAsync().Result;
-
-        }
-    }
 
     protected async override Task OnInitializedAsync()
     {
-        roads = await roadService.GetAsync();
+        try
+        {
+            roads = await roadService.GetAsync();
+
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+        }
     }
 
     void onEditClick(RoadModel model)
@@ -79,12 +65,24 @@ else
 
     async Task onDeleteClick(RoadModel model)
     {
-        modelToDelete = model;
-        await DialogService.Confirm($"Delte {model.Number}?", "Delete", new ConfirmOptions()
+        try
         {
-            OkButtonText = "Yes",
-            CancelButtonText = "No"
-        });
+            var result = await DialogService.Confirm($"Delte {model.Number}?", "Delete", new ConfirmOptions()
+            {
+                OkButtonText = "Yes",
+                CancelButtonText = "No"
+            });
+
+            if (result.HasValue && result.Value)
+            {
+                await roadService.DeleteAsync(model.Id);
+                roads = await roadService.GetAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+        }
     }
 
     void onCreateClick()

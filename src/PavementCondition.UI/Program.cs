@@ -7,6 +7,9 @@ using PavementCondition.UI.Services.Alert;
 using PavementCondition.UI.Services.DefectType;
 using PavementCondition.UI.Services.LocalStorage;
 using PavementCondition.UI.Services.Road;
+using PavementCondition.UI.Services.RoadDefect;
+using PavementCondition.UI.Services.RoadInspection;
+using PavementCondition.UI.Services.RoadStatus;
 
 using Radzen;
 
@@ -33,6 +36,9 @@ namespace PavementCondition.UI
                 .AddScoped<ILocalStorageService, LocalStorageService>()
                 .AddScoped<IDefectTypeService, DefectTypeService>()
                 .AddScoped<IRoadService, RoadService>()
+                .AddScoped<IRoadInspectionService, RoadInspectionService>()
+                .AddScoped<IRoadDefectService, RoadDefectService>()
+                .AddScoped<IRoadStatusService, RoadStatusService>()
                 .AddScoped<DialogService>();
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiHttpUrl) });

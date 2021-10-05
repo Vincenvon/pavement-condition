@@ -51,5 +51,5 @@ type DefectTypesController (logger : ILogger<DefectTypesController>, ctx : Datab
        
        
     [<HttpDelete("{defectTypeId:int}")>]
-    member _.Delete([<FromBody>]defectTypeId: int) = 
+    member _.Delete(defectTypeId: int) = 
         delete ctx defectTypeId

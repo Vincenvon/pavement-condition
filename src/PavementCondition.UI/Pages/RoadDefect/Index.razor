@@ -1,0 +1,96 @@
+﻿@page "/roads/inspections/{id:int}/defects"
+@inject IRoadDefectService roadDefectService
+@inject NavigationManager NavigationManager
+@inject DialogService DialogService
+
+@implements IDisposable
+
+<h1>Inspection defects</h1>
+
+@if (roadDefects == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col float-right">
+            <RadzenButton style="margin: 0 1rem 1rem 0" Click=@(onCreateClick) Text="Create" ButtonStyle="ButtonStyle.Secondary" />
+        </div>
+    </div>
+    <RadzenDataGrid @ref="roadDefectsGrid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true"
+                    Data="@roadDefects" TItem="RoadDefectTableModel">
+        <Columns>
+            <RadzenDataGridColumn Width="50px" TItem="RoadDefectTableModel" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                <Template Context="data">
+                    @(roadDefects.IndexOf(data) + 1)
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="RoadDefectTableModel" Property="RoadInspectionNumber" Title="Inspection number" />
+            <RadzenDataGridColumn TItem="RoadDefectTableModel" Property="DefectTypeName" Title="Defect type name" />
+            <RadzenDataGridColumn TItem="RoadDefectTableModel" Property="DefectStartPoint" Title="Defect start point" />
+            <RadzenDataGridColumn TItem="RoadDefectTableModel" Property="DefectDistance" Title="Defect distance" FormatString="{0:d}" />
+            <RadzenDataGridColumn TItem="RoadDefectTableModel" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                <Template Context="roadDefect">
+                    <RadzenButton Size="ButtonSize.Small" Icon="edit" Click="@(args => onEditClick(roadDefect))" @onclick:stopPropagation="true" />
+                    <RadzenButton Size="ButtonSize.Small" Icon="close" Click="@(args => onDeleteClick(roadDefect))" ButtonStyle="ButtonStyle.Danger" @onclick:stopPropagation="true" />
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+}
+
+@code {
+    RadzenDataGrid<RoadDefectTableModel> roadDefectsGrid;
+
+    RoadDefectTableModel modelToDelete;
+    IList<RoadDefectTableModel> roadDefects;
+
+    public void Dispose()
+    {
+        DialogService.OnClose -= Close;
+    }
+
+    protected override void OnInitialized()
+    {
+        DialogService.OnClose += Close;
+    }
+
+    void Close(dynamic result)
+    {
+        if (result == true)
+        {
+            roadDefectService.DeleteAsync(modelToDelete.Id).Wait();
+            roadDefects = roadDefectService.GetAsync(Id).Result;
+
+        }
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        roadDefects = await roadDefectService.GetAsync(Id);
+    }
+
+    void onEditClick(RoadDefectTableModel model)
+    {
+        NavigationManager.NavigateTo($"/roads/inspections/{Id}/defects/{model.Id}");
+    }
+
+    async Task onDeleteClick(RoadDefectTableModel model)
+    {
+        modelToDelete = model;
+        await DialogService.Confirm($"Delte {model.DefectTypeName}?", "Delete", new ConfirmOptions()
+        {
+            OkButtonText = "Yes",
+            CancelButtonText = "No"
+        });
+    }
+
+    void onCreateClick()
+    {
+        NavigationManager.NavigateTo($"/roads/inspections/{Id}/defects/create");
+    }
+
+    [Parameter]
+    public int Id { get; set; }
+}

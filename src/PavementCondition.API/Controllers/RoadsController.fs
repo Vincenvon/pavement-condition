@@ -21,3 +21,15 @@ type RoadsController (logger : ILogger<RoadsController>, ctx : DatabaseContext) 
     member _.Create([<FromBody>]model: CreateRoadRequest) =
         let createdDto = create ctx (mapCreateRequestToCreateDto model)
         mapRoadDtoToRoadResponse createdDto
+
+    [<HttpGet("{roadId:int}")>]
+    member _.GetById(roadId: int) = 
+        getById ctx roadId |> mapRoadDtoToRoadResponse
+
+    [<HttpPut>]
+    member _.Edit([<FromBody>]model: EditRoadRequest) = 
+        edit ctx (mapEditRequestToDto model) |> mapRoadDtoToRoadResponse
+
+    [<HttpDelete("{roadId:int}")>]
+    member _.Delete(roadId: int) = 
+        delete ctx roadId |> ignore

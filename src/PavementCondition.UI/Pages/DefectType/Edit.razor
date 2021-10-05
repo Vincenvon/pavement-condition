@@ -32,7 +32,19 @@
 
     protected override async Task OnInitializedAsync()
     {
-        model = await DefectTypeService.GetByIdAsync(Id);
+        AlertService.Clear();
+
+        loading = true;
+        try
+        {
+            model = await DefectTypeService.GetByIdAsync(Id);
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+            loading = false;
+            StateHasChanged();
+        }
     }
 
     private async void OnValidSubmit()

@@ -16,8 +16,8 @@
                     <ValidationMessage For="@(() => model.Name)" />
                 </div>
                 <div class="row">
-                    <RadzenButton style="margin: 0 1rem 1rem 0" Click=@(onCancleClick) Text="Cancel" ButtonStyle="ButtonStyle.Light" />
-                    <RadzenButton style="margin: 0 1rem 1rem 0" Click=@(OnValidSubmit) Text="Save" ButtonStyle="ButtonStyle.Secondary" />
+                    <RadzenButton style="margin: 0 1rem 1rem 0" Click=@(onCancleClick) Text="Cancel" ButtonStyle="ButtonStyle.Light" Disabled="loading" />
+                    <RadzenButton style="margin: 0 1rem 1rem 0" Click=@(OnValidSubmit) Text="Save" ButtonStyle="ButtonStyle.Secondary" IsBusy="loading" />
                 </div>
             </EditForm>
         </div>

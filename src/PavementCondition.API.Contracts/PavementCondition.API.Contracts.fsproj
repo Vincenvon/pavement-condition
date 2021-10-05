@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="RoadStatus\RoadStatusTableResponse.fs" />
+    <Compile Include="RoadDefects\RoadDefectTableResponse.fs" />
+    <Compile Include="RoadDefects\RoadDefectResponse.fs" />
+    <Compile Include="RoadDefects\CreateRoadDefectRequest.fs" />
+    <Compile Include="RoadDefects\EditRoadDefectRequest.fs" />
+    <Compile Include="RoadInspection\EditRoadInspectionRequest.fs" />
+    <Compile Include="RoadInspection\CreateRoadInspectionRequest.fs" />
+    <Compile Include="RoadInspection\RoadInspectionResponse.fs" />
+    <Compile Include="RoadInspection\RoadInspectionTableResponse.fs" />
+    <Compile Include="Roads\EditRoadRequest.fs" />
     <Compile Include="Roads\CreateRoadRequest.fs" />
     <Compile Include="Roads\RoadResponse.fs" />
     <Compile Include="DefectTypes\EditDefectTypeRequest.fs" />

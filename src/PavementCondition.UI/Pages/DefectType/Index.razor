@@ -2,8 +2,7 @@
 @inject IDefectTypeService defectTypeService
 @inject NavigationManager NavigationManager
 @inject DialogService DialogService
-
-@implements IDisposable
+@inject IAlertService AlertService
 
 <h1>Defect types</h1>
 
@@ -41,32 +40,19 @@ else
 @code {
     RadzenDataGrid<DefectTypeModel> defectTypeGrid;
 
-    DefectTypeModel modelToDelete;
     IList<DefectTypeModel> defectTypes;
 
-    public void Dispose()
-    {
-        DialogService.OnClose -= Close;
-    }
-
-    protected override void OnInitialized()
-    {
-        DialogService.OnClose += Close;
-    }
-
-    void Close(dynamic result)
-    {
-        if (result == true)
-        {
-            defectTypeService.DeleteAsync(modelToDelete.Id).Wait();
-            defectTypes = defectTypeService.GetAsync().Result;
-
-        }
-    }
 
     protected async override Task OnInitializedAsync()
     {
-        defectTypes = await defectTypeService.GetAsync();
+        try
+        {
+            defectTypes = await defectTypeService.GetAsync();
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+        }
     }
 
     void onEditClick(DefectTypeModel model)
@@ -76,12 +62,24 @@ else
 
     async Task onDeleteClick(DefectTypeModel model)
     {
-        modelToDelete = model;
-        await DialogService.Confirm($"Delte {model.Name}?", "Delete", new ConfirmOptions()
+        try
         {
-            OkButtonText = "Yes",
-            CancelButtonText = "No"
-        });
+            var result = await DialogService.Confirm($"Delte {model.Name}?", "Delete", new ConfirmOptions()
+            {
+                OkButtonText = "Yes",
+                CancelButtonText = "No"
+            });
+
+            if (result.HasValue && result.Value)
+            {
+                await defectTypeService.DeleteAsync(model.Id);
+                defectTypes = await defectTypeService.GetAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+        }
     }
 
     void onCreateClick()

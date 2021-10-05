@@ -25,3 +25,10 @@ let mapCreateDtoToEntity(dto: CreateRoadDto): Road =
     }
     entity
 
+let mutateEntityByDto (entity: Road) (dto: RoadDto) : Road = 
+    entity.Distance <- dto.Distance
+    entity.EndPoint <- dto.EndPoint
+    entity.StartPoint <- dto.StartPoint
+    entity.Number <- dto.Number
+    entity.ServiceOrganization <- dto.ServiceOrganization
+    entity

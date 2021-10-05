@@ -7,9 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Validators\RoadDefects.fs" />
+    <Compile Include="Validators\RoadInspections.fs" />
     <Compile Include="Validators\Roads.fs" />
+    <Compile Include="Mappers\RoadDefects.fs" />
+    <Compile Include="Mappers\RoadInspections.fs" />
     <Compile Include="Mappers\Roads.fs" />
     <Compile Include="Roads.fs" />
+    <Compile Include="RoadInspections.fs" />
+    <Compile Include="RoadStatus.fs" />
+    <Compile Include="RoadDefects.fs" />
     <Compile Include="DefectTypes.fs" />
     <Compile Include="Accounts.fs" />
   </ItemGroup>

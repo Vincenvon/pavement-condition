@@ -4,7 +4,6 @@ using PavementCondition.API.Contracts.Roads;
 using PavementCondition.UI.Infrastructure;
 using PavementCondition.UI.Models.Road;
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -29,14 +28,17 @@ namespace PavementCondition.UI.Services.Road
             return _mapper.Map<RoadModel>(response);
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            await _apiClient.DeleteAsync(id, $"/roads/{id}");
         }
 
-        public Task<RoadModel> EditAsync(RoadModel model)
+        public async Task<RoadModel> EditAsync(RoadModel model)
         {
-            throw new NotImplementedException();
+            var request = new EditRoadRequest(model.Id, model.Number, model.StartPoint, model.EndPoint, model.Distance, model.ServiceOrganization);
+            var response = await _apiClient.PutAsync<EditRoadRequest, RoadResponse>(request, "/roads");
+
+            return _mapper.Map<RoadModel>(response);
         }
 
         public async Task<List<RoadModel>> GetAsync()
@@ -45,9 +47,10 @@ namespace PavementCondition.UI.Services.Road
             return _mapper.Map<List<RoadModel>>(responses);
         }
 
-        public Task<RoadModel> GetByIdAsync(int id)
+        public async Task<RoadModel> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var responses = await _apiClient.GetAsync<RoadResponse>($"/roads/{id}");
+            return _mapper.Map<RoadModel>(responses);
         }
     }
 }

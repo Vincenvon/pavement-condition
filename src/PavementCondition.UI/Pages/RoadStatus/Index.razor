@@ -1,0 +1,38 @@
+﻿@page "/"
+@inject IRoadStatusService roadStatusService
+
+<h1>Road statuses</h1>
+
+@if (roadStatuses == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <RadzenDataGrid @ref="roadStatusGrid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true"
+                    Data="@roadStatuses" TItem="RoadStatusTableModel">
+        <Columns>
+            <RadzenDataGridColumn Width="50px" TItem="RoadStatusTableModel" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                <Template Context="data">
+                    @(roadStatuses.IndexOf(data) + 1)
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="RoadStatusTableModel" Property="RoadNumber" Title="Road number" />
+            <RadzenDataGridColumn TItem="RoadStatusTableModel" Property="LastInspectionNumber" Title="Last inspection number" />
+            <RadzenDataGridColumn TItem="RoadStatusTableModel" Property="LastInspectionDate" Title="Last inspection date" FormatString="{0:d}" />
+            <RadzenDataGridColumn TItem="RoadStatusTableModel" Property="DefectPercent" Title="Defect percent" />
+        </Columns>
+    </RadzenDataGrid>
+}
+
+@code {
+    RadzenDataGrid<RoadStatusTableModel> roadStatusGrid;
+
+    IList<RoadStatusTableModel> roadStatuses;
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        roadStatuses = await roadStatusService.GetAsync();
+    }
+}

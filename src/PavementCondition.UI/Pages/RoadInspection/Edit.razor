@@ -1,0 +1,93 @@
+﻿@page "/roads/inspections/{id:int}"
+@inject IRoadInspectionService roadInspectionService
+@inject IRoadService roadService
+@inject IAlertService AlertService
+@inject NavigationManager NavigationManager
+
+@using PavementCondition.UI.Models.Road
+@using PavementCondition.UI.Services.Road
+
+<h1>Create road inspection</h1>
+
+<div class="row">
+    <div class="card col-6">
+        <div class="card-body">
+            <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+                <DataAnnotationsValidator />
+                <div class="form-group">
+                    <label>Road</label>
+                    <InputSelect @bind-Value="model.RoadId" class="form-control">
+                        @foreach (var road in roadModels)
+                        {
+                            <option value="@road.Id">@road.Number</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => model.RoadId)" />
+                </div>
+                <div class="form-group">
+                    <label>Number</label>
+                    <InputText @bind-Value="model.Number" class="form-control" />
+                    <ValidationMessage For="@(() => model.Number)" />
+                </div>
+                <div class="form-group">
+                    <label>Engineer</label>
+                    <InputText @bind-Value="model.Engineer" class="form-control" />
+                    <ValidationMessage For="@(() => model.Engineer)" />
+                </div>
+                <div class="row">
+                    <RadzenButton style="margin: 0 1rem 1rem 0" Click=@(onCancleClick) Text="Cancel" ButtonStyle="ButtonStyle.Light" Disabled="loading" />
+                    <RadzenButton style="margin: 0 1rem 1rem 0" Click=@(OnValidSubmit) Text="Save" ButtonStyle="ButtonStyle.Secondary" IsBusy="loading" />
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private RoadInspectionModel model = new RoadInspectionModel();
+    private List<RoadModel> roadModels = new List<RoadModel>();
+    private bool loading = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+        try
+        {
+            roadModels = await roadService.GetAsync();
+            model = await roadInspectionService.GetByIdAsync(Id);
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async void OnValidSubmit()
+    {
+        AlertService.Clear();
+
+        loading = true;
+        try
+        {
+            await roadInspectionService.CreateAsync(model);
+            NavigationManager.NavigateTo("/roads/inspections");
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+
+    void onCancleClick()
+    {
+        NavigationManager.NavigateTo("/roads");
+    }
+
+    [Parameter]
+    public int Id { get; set; }
+}

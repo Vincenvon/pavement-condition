@@ -3,7 +3,6 @@
 @inject PavementCondition.UI.Services.Account.IAccountService AccountService
 @inject NavigationManager NavigationManager
 
-
 <RadzenDialog />
 <div class="page">
     @if (isLogged)
@@ -15,6 +14,7 @@
     }
     <div class="main">
         <div class="content px-4">
+            <Alert />
             @Body
         </div>
     </div>

@@ -71,6 +71,62 @@ namespace PavementCondition.DataAccess.Migrations
                     b.ToTable("Roads");
                 });
 
+            modelBuilder.Entity("PavementCondition.Entity.RoadDefect", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<decimal>("DefectDistance")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("DefectStartPoint")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("DefectTypeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RoadInspectionId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DefectTypeId");
+
+                    b.HasIndex("RoadInspectionId");
+
+                    b.ToTable("RoadDefects");
+                });
+
+            modelBuilder.Entity("PavementCondition.Entity.RoadInspection", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Engineer")
+                        .IsRequired()
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<DateTime>("InspectionDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("RoadId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoadId");
+
+                    b.ToTable("RoadInspections");
+                });
+
             modelBuilder.Entity("PavementCondition.Entity.User", b =>
                 {
                     b.Property<int>("Id")
@@ -103,6 +159,30 @@ namespace PavementCondition.DataAccess.Migrations
                     b.HasIndex("Email");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("PavementCondition.Entity.RoadDefect", b =>
+                {
+                    b.HasOne("PavementCondition.Entity.DefectType", null)
+                        .WithMany()
+                        .HasForeignKey("DefectTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PavementCondition.Entity.RoadInspection", null)
+                        .WithMany()
+                        .HasForeignKey("RoadInspectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PavementCondition.Entity.RoadInspection", b =>
+                {
+                    b.HasOne("PavementCondition.Entity.Road", null)
+                        .WithMany()
+                        .HasForeignKey("RoadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
