@@ -55,6 +55,7 @@
         try
         {
             roadModels = await roadService.GetAsync();
+            loading = false;
         }
         catch(Exception ex)
         {

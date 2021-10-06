@@ -6,7 +6,7 @@ type EditRoadInspectionRequest = {
     Id: int
     RoadId: int
     Number: string
-    Engineer: int
+    Engineer: string
     InspectionDate: DateTime
 }
 

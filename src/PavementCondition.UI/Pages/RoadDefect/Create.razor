@@ -1,13 +1,11 @@
-﻿@page "/roads/inspections/{id:int}"
-@inject IRoadInspectionService roadInspectionService
-@inject IRoadService roadService
+﻿@page "/roads/inspections/{id:int}/defects/create"
+@inject IDefectTypeService defectTypeService
+@inject IRoadDefectService roadDefectService
 @inject IAlertService AlertService
 @inject NavigationManager NavigationManager
 
-@using PavementCondition.UI.Models.Road
-@using PavementCondition.UI.Services.Road
 
-<h1>Edit road inspection</h1>
+<h1>Create road defect</h1>
 
 <div class="row">
     <div class="card col-6">
@@ -15,24 +13,24 @@
             <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
                 <DataAnnotationsValidator />
                 <div class="form-group">
-                    <label>Road</label>
-                    <InputSelect @bind-Value="model.RoadId" class="form-control">
-                        @foreach (var road in roadModels)
+                    <label>Defect type</label>
+                    <InputSelect @bind-Value="model.DefectTypeId" class="form-control">
+                        @foreach (var defectType in defectTypes)
                         {
-                            <option value="@road.Id">@road.Number</option>
+                            <option value="@defectType.Id">@defectType.Name</option>
                         }
                     </InputSelect>
-                    <ValidationMessage For="@(() => model.RoadId)" />
+                    <ValidationMessage For="@(() => model.DefectTypeId)" />
                 </div>
                 <div class="form-group">
-                    <label>Number</label>
-                    <InputText @bind-Value="model.Number" class="form-control" />
-                    <ValidationMessage For="@(() => model.Number)" />
+                    <label>Defect start point</label>
+                    <InputNumber @bind-Value="model.DefectStartPoint" class="form-control" />
+                    <ValidationMessage For="@(() => model.DefectStartPoint)" />
                 </div>
                 <div class="form-group">
-                    <label>Engineer</label>
-                    <InputText @bind-Value="model.Engineer" class="form-control" />
-                    <ValidationMessage For="@(() => model.Engineer)" />
+                    <label>Defect distance</label>
+                    <InputNumber @bind-Value="model.DefectDistance" class="form-control" />
+                    <ValidationMessage For="@(() => model.DefectDistance)" />
                 </div>
                 <div class="row">
                     <RadzenButton style="margin: 0 1rem 1rem 0" Click=@(onCancleClick) Text="Cancel" ButtonStyle="ButtonStyle.Light" Disabled="loading" />
@@ -44,8 +42,8 @@
 </div>
 
 @code {
-    private RoadInspectionModel model = new RoadInspectionModel();
-    private List<RoadModel> roadModels = new List<RoadModel>();
+    private RoadDefectModel model = new RoadDefectModel();
+    private List<DefectTypeModel> defectTypes = new List<DefectTypeModel>();
     private bool loading = false;
 
 
@@ -54,8 +52,7 @@
         loading = true;
         try
         {
-            roadModels = await roadService.GetAsync();
-            model = await roadInspectionService.GetByIdAsync(Id);
+            defectTypes = await defectTypeService.GetAsync();
             loading = false;
         }
         catch (Exception ex)
@@ -64,6 +61,8 @@
             loading = false;
             StateHasChanged();
         }
+
+
     }
 
     private async void OnValidSubmit()
@@ -73,8 +72,9 @@
         loading = true;
         try
         {
-            await roadInspectionService.EditAsync(model);
-            NavigationManager.NavigateTo("/roads/inspections");
+            model.RoadInspectionId = Id;
+            await roadDefectService.CreateAsync(model);
+            NavigationManager.NavigateTo($"/roads/inspections/{Id}/defects");
         }
         catch (Exception ex)
         {
@@ -86,7 +86,7 @@
 
     void onCancleClick()
     {
-        NavigationManager.NavigateTo("/roads/inspections");
+        NavigationManager.NavigateTo($"/roads/inspections/{Id}/defects");
     }
 
     [Parameter]

@@ -7,7 +7,7 @@ type RoadInspectionTableResponse = {
     RoadId: int
     RoadNumber: string
     Number: string
-    Engineer: int
+    Engineer: string
     InspectionDate: DateTime
 }
 

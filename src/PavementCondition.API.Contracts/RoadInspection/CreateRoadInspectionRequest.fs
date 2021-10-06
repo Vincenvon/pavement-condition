@@ -5,7 +5,7 @@ open System
 type CreateRoadInspectionRequest = {
     RoadId: int
     Number: string
-    Engineer: int
+    Engineer: string
     InspectionDate: DateTime
 }
 

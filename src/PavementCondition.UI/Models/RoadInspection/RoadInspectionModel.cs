@@ -18,7 +18,6 @@ namespace PavementCondition.UI.Models.RoadInspection
         [MaxLength(200)]
         public string Engineer { get; set; }
 
-        [Required]
-        public DateTime InspectionDate { get; set; }
+        public DateTime InspectionDate { get; set; } = DateTime.Now;
     }
 }

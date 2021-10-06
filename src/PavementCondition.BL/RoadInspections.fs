@@ -9,14 +9,25 @@ open System.Linq
 
 
 let get (db: DatabaseContext): RoadInspectionTableDto[] = 
+    let roadInspections = 
+        query{
+            for roadInspection in db.RoadInspections do
+            select roadInspection
+        } |> Seq.toList
+
+    let roads = 
+        query{
+            for road in db.Roads do
+            select road
+        } |> Seq.toList
+
     query {
-        for roadInspection in db.RoadInspections do
-        leftOuterJoin road in db.Roads on (roadInspection.RoadId = road.Id) into joinedRoads
-        for joinedRoad in joinedRoads.DefaultIfEmpty() do
+        for roadInspection in roadInspections do
+        join road in roads on (roadInspection.RoadId = road.Id)
         select {| 
                 Id = roadInspection.Id; 
                 RoadId = roadInspection.RoadId; 
-                RoadNumber = joinedRoad.Number; 
+                RoadNumber = road.Number; 
                 Number = roadInspection.Number; 
                 Engineer = roadInspection.Engineer; 
                 InspectionDate = roadInspection.InspectionDate 

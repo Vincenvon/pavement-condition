@@ -7,5 +7,7 @@
         public const string RoadDefects = "roaddefects";
 
         public const string RoadStatuses = "roadstatuses";
+
+        public const string RoadInspections = "roadinspections";
     }
 }

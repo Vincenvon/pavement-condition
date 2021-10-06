@@ -10,19 +10,19 @@ let get (db: DatabaseContext): RoadStatusTableDto[] =
         query {
             for road in db.Roads do
             select road
-        }|> Seq.toArray
+        }|> Seq.toList
 
     let inspections =
         query {
             for inspection in db.RoadInspections do
             select inspection
-        }|> Seq.toArray
+        }|> Seq.toList
 
     let roadDefects = 
         query {
             for roadDefect in db.RoadDefects do
             select roadDefect
-        }|> Seq.toArray
+        }|> Seq.toList
 
     let lastInspections = 
         query { 
@@ -36,7 +36,7 @@ let get (db: DatabaseContext): RoadStatusTableDto[] =
                                 lastOrDefault
                                 }
                     |}
-            }
+            } |> Seq.toList
 
     let roadDefectsByInspection = 
         query {
@@ -50,20 +50,22 @@ let get (db: DatabaseContext): RoadStatusTableDto[] =
                 }
                 
             |}
-        }
+        } |> Seq.toList
 
     query {
         for road in roads do 
         leftOuterJoin inspection in lastInspections on (road.Id = inspection.RoadId) into joinedInspections
-        for joinedInspection in joinedInspections.DefaultIfEmpty() do
-        leftOuterJoin roadDefect in roadDefectsByInspection on (joinedInspection.LastInspection.Id = roadDefect.RoadInspectionId) into jonedRoadDefects
-        for jonedRoadDefect in jonedRoadDefects.DefaultIfEmpty() do
-        select {
-                RoadId = road.Id; 
-                RoadNumber = road.Number;
-                LastInspectionId = Some(joinedInspection.LastInspection.Id)
-                LastInspectionNumber = Some(joinedInspection.LastInspection.Number)
-                LastInspectionDate = Some(joinedInspection.LastInspection.InspectionDate)
-                DefectPercent = Some(road.Distance / jonedRoadDefect.DefectSumDistance)
-            }
-    }|> Seq.toArray
+        for inspection in joinedInspections do
+        leftOuterJoin roadDefect in roadDefectsByInspection on (inspection.LastInspection.Id = roadDefect.RoadInspectionId) into jonedRoadDefects
+        for roadDefect in jonedRoadDefects do
+        select (road, inspection, roadDefect)
+    }|> Seq.map (fun (road, inspection, roadDefect) -> 
+                        {
+                            RoadId = road.Id; 
+                            RoadNumber = road.Number;
+                            LastInspectionId = Some(inspection.LastInspection.Id)
+                            LastInspectionNumber = Some(inspection.LastInspection.Number)
+                            LastInspectionDate = Some(inspection.LastInspection.InspectionDate)
+                            DefectPercent = Some(road.Distance / roadDefect.DefectSumDistance)
+                        }
+    ) |> Seq.toArray

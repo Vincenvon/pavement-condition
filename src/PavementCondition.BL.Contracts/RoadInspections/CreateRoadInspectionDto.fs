@@ -5,6 +5,6 @@ open System
 type CreateRoadInspectionDto = {
     RoadId: int
     Number: string
-    Engineer: int
+    Engineer: string
     InspectionDate: DateTime
 }

@@ -2,8 +2,7 @@
 @inject IRoadInspectionService roadInspectionService
 @inject NavigationManager NavigationManager
 @inject DialogService DialogService
-
-@implements IDisposable
+@inject IAlertService AlertService
 
 <h1>Road inspections</h1>
 
@@ -29,7 +28,7 @@ else
             <RadzenDataGridColumn TItem="RoadInspectionTableModel" Property="RoadNumber" Title="Road number" />
             <RadzenDataGridColumn TItem="RoadInspectionTableModel" Property="Number" Title="Number" />
             <RadzenDataGridColumn TItem="RoadInspectionTableModel" Property="Engineer" Title="Engineer" />
-            <RadzenDataGridColumn TItem="RoadInspectionTableModel" Property="InspectionDate" Title="InspectionDate" FormatString="{0:d}" />
+            <RadzenDataGridColumn TItem="RoadInspectionTableModel" Property="InspectionDate" Title="Inspection Date" FormatString="{0:d}" />
             <RadzenDataGridColumn TItem="RoadInspectionTableModel" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
                 <Template Context="roadInspection">
                     <RadzenButton Size="ButtonSize.Small" Icon="edit" Click="@(args => onEditClick(roadInspection))" @onclick:stopPropagation="true" />
@@ -44,32 +43,19 @@ else
 @code {
     RadzenDataGrid<RoadInspectionTableModel> roadInspectionGrid;
 
-    RoadInspectionTableModel modelToDelete;
     IList<RoadInspectionTableModel> roadInspections;
 
-    public void Dispose()
-    {
-        DialogService.OnClose -= Close;
-    }
-
-    protected override void OnInitialized()
-    {
-        DialogService.OnClose += Close;
-    }
-
-    void Close(dynamic result)
-    {
-        if (result == true)
-        {
-            roadInspectionService.DeleteAsync(modelToDelete.Id).Wait();
-            roadInspections = roadInspectionService.GetAsync().Result;
-
-        }
-    }
 
     protected async override Task OnInitializedAsync()
     {
-        roadInspections = await roadInspectionService.GetAsync();
+        try
+        {
+            roadInspections = await roadInspectionService.GetAsync();
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+        }
     }
 
     void onEditClick(RoadInspectionTableModel model)
@@ -84,12 +70,26 @@ else
 
     async Task onDeleteClick(RoadInspectionTableModel model)
     {
-        modelToDelete = model;
-        await DialogService.Confirm($"Delte {model.Number}?", "Delete", new ConfirmOptions()
+        try
         {
-            OkButtonText = "Yes",
-            CancelButtonText = "No"
-        });
+            var answerResult = await DialogService.Confirm($"Delete {model.Number}?", "Delete", new ConfirmOptions()
+            {
+                OkButtonText = "Yes",
+                CancelButtonText = "No"
+            });
+
+            if (answerResult.HasValue && answerResult.Value)
+            {
+
+                await roadInspectionService.DeleteAsync(model.Id);
+                roadInspections = await roadInspectionService.GetAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+        }
+
     }
 
     void onCreateClick()

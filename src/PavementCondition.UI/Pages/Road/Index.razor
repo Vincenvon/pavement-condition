@@ -67,7 +67,7 @@ else
     {
         try
         {
-            var result = await DialogService.Confirm($"Delte {model.Number}?", "Delete", new ConfirmOptions()
+            var result = await DialogService.Confirm($"Delete {model.Number}?", "Delete", new ConfirmOptions()
             {
                 OkButtonText = "Yes",
                 CancelButtonText = "No"

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 
 using PavementCondition.API.Contracts.RoadInspection;
+using PavementCondition.UI.Constants;
 using PavementCondition.UI.Infrastructure;
 using PavementCondition.UI.Models.RoadInspection;
 
@@ -21,30 +22,37 @@ namespace PavementCondition.UI.Services.RoadInspection
             _mapper = mapper;
         }
 
-        public Task<RoadInspectionModel> CreateAsync(RoadInspectionModel model)
+        public async Task<RoadInspectionModel> CreateAsync(RoadInspectionModel model)
         {
-            throw new NotImplementedException();
+            var request = new CreateRoadInspectionRequest(model.RoadId, model.Number, model.Engineer, model.InspectionDate);
+            var response = await _apiClient.PostAsync<CreateRoadInspectionRequest, RoadInspectionReponse>(request, ApiControllerNameConstants.RoadInspections);
+
+            return _mapper.Map<RoadInspectionModel>(response);
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            await _apiClient.DeleteAsync(id, $"/${ApiControllerNameConstants.RoadInspections}/{id}");
         }
 
-        public Task<RoadInspectionModel> EditAsync(RoadInspectionModel model)
+        public async Task<RoadInspectionModel> EditAsync(RoadInspectionModel model)
         {
-            throw new NotImplementedException();
+            var request = new EditRoadInspectionRequest(model.Id, model.RoadId, model.Number, model.Engineer, model.InspectionDate);
+            var response = await _apiClient.PutAsync<EditRoadInspectionRequest, RoadInspectionReponse>(request, ApiControllerNameConstants.RoadInspections);
+
+            return _mapper.Map<RoadInspectionModel>(response);
         }
 
         public async Task<List<RoadInspectionTableModel>> GetAsync()
         {
-            var responses = await _apiClient.GetAsync<List<RoadInspectionTableResponse>>("/roads");
+            var responses = await _apiClient.GetAsync<List<RoadInspectionTableResponse>>(ApiControllerNameConstants.RoadInspections);
             return _mapper.Map<List<RoadInspectionTableModel>>(responses);
         }
 
-        public Task<RoadInspectionModel> GetByIdAsync(int id)
+        public async Task<RoadInspectionModel> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var responses = await _apiClient.GetAsync<RoadInspectionReponse>($"/{ApiControllerNameConstants.RoadInspections}/{id}");
+            return _mapper.Map<RoadInspectionModel>(responses);
         }
     }
 }

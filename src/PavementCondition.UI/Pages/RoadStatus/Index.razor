@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject IRoadStatusService roadStatusService
+@inject IAlertService AlertService
 
 <h1>Road statuses</h1>
 
@@ -33,6 +34,14 @@ else
 
     protected async override Task OnInitializedAsync()
     {
-        roadStatuses = await roadStatusService.GetAsync();
+        try
+        {
+            roadStatuses = await roadStatusService.GetAsync();
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+        }
+
     }
 }
