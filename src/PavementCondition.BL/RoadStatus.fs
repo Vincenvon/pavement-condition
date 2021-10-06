@@ -24,48 +24,29 @@ let get (db: DatabaseContext): RoadStatusTableDto[] =
             select roadDefect
         }|> Seq.toList
 
-    let lastInspections = 
-        query { 
-            for inspection in inspections do
-            groupBy inspection.RoadId into groupedInspections
-            select {|
-                        RoadId = groupedInspections.Key
-                        LastInspection = query {
-                                for groupedInspection in groupedInspections do
-                                sortBy groupedInspection.InspectionDate
-                                lastOrDefault
-                                }
-                    |}
-            } |> Seq.toList
 
-    let roadDefectsByInspection = 
-        query {
-            for roadDefect in roadDefects do
-            groupBy roadDefect.RoadInspectionId into groupedRoadDefects
-            select {|
-                    RoadInspectionId = groupedRoadDefects.Key
-                    DefectSumDistance = query {
-                        for groupedRoadDefect in groupedRoadDefects do
-                        sumBy groupedRoadDefect.DefectDistance
-                }
-                
-            |}
-        } |> Seq.toList
-
-    query {
-        for road in roads do 
-        leftOuterJoin inspection in lastInspections on (road.Id = inspection.RoadId) into joinedInspections
-        for inspection in joinedInspections do
-        leftOuterJoin roadDefect in roadDefectsByInspection on (inspection.LastInspection.Id = roadDefect.RoadInspectionId) into jonedRoadDefects
-        for roadDefect in jonedRoadDefects do
-        select (road, inspection, roadDefect)
-    }|> Seq.map (fun (road, inspection, roadDefect) -> 
-                        {
-                            RoadId = road.Id; 
-                            RoadNumber = road.Number;
-                            LastInspectionId = Some(inspection.LastInspection.Id)
-                            LastInspectionNumber = Some(inspection.LastInspection.Number)
-                            LastInspectionDate = Some(inspection.LastInspection.InspectionDate)
-                            DefectPercent = Some(road.Distance / roadDefect.DefectSumDistance)
-                        }
-    ) |> Seq.toArray
+    roads |> Seq.map (fun r -> 
+        let lastInspection =  inspections|> Seq.where (fun i -> (i.RoadId=r.Id)) |> Seq.sortByDescending (fun i -> i.InspectionDate) |> Seq.tryHead
+        match lastInspection.IsNone with
+        |true -> {
+                RoadId = r.Id; 
+                RoadNumber = r.Number;
+                LastInspectionId = None 
+                LastInspectionNumber = None
+                LastInspectionDate = None
+                DefectPercent = None
+            }
+        |false-> 
+            let inspectionDefectsSum = roadDefects |> Seq.where(fun rd -> (rd.RoadInspectionId = lastInspection.Value.Id)) |> Seq.sumBy (fun rd -> rd.DefectDistance)
+            {
+                RoadId = r.Id; 
+                RoadNumber = r.Number;
+                LastInspectionId = Some(lastInspection.Value.Id)
+                LastInspectionNumber = Some(lastInspection.Value.Number)
+                LastInspectionDate = Some(lastInspection.Value.InspectionDate)
+                DefectPercent =
+                match inspectionDefectsSum with
+                        | ids when ids > 0M -> Some(r.Distance/inspectionDefectsSum)
+                        |_ -> Some(0M)
+            }
+        ) |> Seq.toArray
