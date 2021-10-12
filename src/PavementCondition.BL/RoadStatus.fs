@@ -46,7 +46,7 @@ let get (db: DatabaseContext): RoadStatusTableDto[] =
                 LastInspectionDate = Some(lastInspection.Value.InspectionDate)
                 DefectPercent =
                 match inspectionDefectsSum with
-                        | ids when ids > 0M -> Some(r.Distance/inspectionDefectsSum)
+                        | ids when ids > 0M -> Some((inspectionDefectsSum * 100M)/r.Distance)
                         |_ -> Some(0M)
             }
         ) |> Seq.toArray

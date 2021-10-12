@@ -25,7 +25,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        isLogged = !(await AccountService.GetTokenAsync() == null);
+        var token = await AccountService.GetTokenAsync();
+
+
+        isLogged = !(string.IsNullOrEmpty(token));
 
 
         if (!isLogged)

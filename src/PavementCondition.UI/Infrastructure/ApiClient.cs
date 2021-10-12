@@ -23,7 +23,9 @@ namespace PavementCondition.UI.Infrastructure
                 Version = new Version(2, 0),
             };
 
-            await _httpClient.SendAsync(message);
+            var response = await _httpClient.SendAsync(message);
+            if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                throw new Exception("Something went wrong");
         }
 
         public async Task<TResponse> GetAsync<TResponse>(string url)
@@ -34,6 +36,9 @@ namespace PavementCondition.UI.Infrastructure
             };
 
             var response = await _httpClient.SendAsync(message);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                throw new Exception("Something went wrong");
             var responseString = await response.Content.ReadAsStringAsync();
 
             return JsonSerializer.Deserialize<TResponse>(responseString, new JsonSerializerOptions
@@ -51,6 +56,8 @@ namespace PavementCondition.UI.Infrastructure
             };
 
             var response = await _httpClient.SendAsync(message);
+            if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                throw new Exception("Something went wrong");
             var responseString = await response.Content.ReadAsStringAsync();
 
             return JsonSerializer.Deserialize<TResponse>(responseString, new JsonSerializerOptions
@@ -68,6 +75,8 @@ namespace PavementCondition.UI.Infrastructure
             };
 
             var response = await _httpClient.SendAsync(message);
+            if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                throw new Exception("Something went wrong");
             var responseString = await response.Content.ReadAsStringAsync();
 
             return JsonSerializer.Deserialize<TResponse>(responseString, new JsonSerializerOptions

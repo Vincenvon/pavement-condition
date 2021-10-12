@@ -44,10 +44,7 @@ let buildToken (settings: JwtTokenSettings) (email: string): string =
 let login (db: DatabaseContext) (dto: LoginDto) (settings: JwtTokenSettings): TokenDto = 
     let isUserExisting = db.Users.AsQueryable().Any(fun u -> u.Email = dto.Email)
     match isUserExisting with
-    | false -> {
-        AccessToke = ""
-        RefreshToken = ""
-        }
+    | false -> raise(Exception("Wrong email or password"))
     |true -> 
         let existingUser = db.Users.AsQueryable().First(fun u -> u.Email = dto.Email)
         let isPasswordValid = BCrypt.Verify(dto.Password, existingUser.PasswordHash)
@@ -59,13 +56,7 @@ let login (db: DatabaseContext) (dto: LoginDto) (settings: JwtTokenSettings): To
                 RefreshToken = token
             }
             tokenDto
-        | false -> 
-            let token = ""
-            let tokenDto = {
-                AccessToke = token
-                RefreshToken = token
-            }
-            tokenDto
+        | false -> raise(Exception("Wrong email or password"))
             
     
 
